@@ -138,7 +138,8 @@ class TestCommandExtension(TestCommand):
         """Invoke pytest."""
         import pytest
 
-        exit(pytest.main(["--doctest-modules"]))
+        exit(pytest.main(["-rapP --doctest-modules"]))
+        #                  ^ show short test summary at end
 
 
 with open("README.md", "r") as file_handle:
