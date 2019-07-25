@@ -182,6 +182,7 @@ export class BaseContract {
         address: string,
         supportedProvider: SupportedProvider,
         callAndTxnDefaults?: Partial<CallData>,
+        abiDependencies?: { [contractName: string]: ContractAbi },
     ) {
         assert.isString('contractName', contractName);
         assert.isETHAddressHex('address', address);
@@ -205,6 +206,10 @@ export class BaseContract {
             const abiEncoder = new AbiEncoder.Method(methodAbi);
             const functionSignature = abiEncoder.getSignature();
             this._abiEncoderByFunctionSignature[functionSignature] = abiEncoder;
+            this._web3Wrapper.abiDecoder.addABI(abi, contractName);
+        });
+        _.each(abiDependencies, (abi, name) => {
+            this._web3Wrapper.abiDecoder.addABI(abi, name);
         });
     }
 }

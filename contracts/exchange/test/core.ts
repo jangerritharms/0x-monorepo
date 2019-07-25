@@ -50,6 +50,8 @@ import {
     TestStaticCallReceiverContract,
 } from '../src';
 
+import { dependencyArtifacts } from './utils/dependency_artifacts';
+
 chaiSetup.configure();
 const expect = chai.expect;
 const blockchainLifecycle = new BlockchainLifecycle(web3Wrapper);
@@ -135,17 +137,20 @@ describe('Exchange core', () => {
             artifacts.Exchange,
             provider,
             txDefaults,
+            dependencyArtifacts,
             assetDataUtils.encodeERC20AssetData(zrxToken.address),
         );
         maliciousWallet = maliciousValidator = await TestStaticCallReceiverContract.deployFrom0xArtifactAsync(
             artifacts.TestStaticCallReceiver,
             provider,
             txDefaults,
+            dependencyArtifacts,
         );
         reentrantErc20Token = await ReentrantERC20TokenContract.deployFrom0xArtifactAsync(
             artifacts.ReentrantERC20Token,
             provider,
             txDefaults,
+            dependencyArtifacts,
             exchange.address,
         );
 
@@ -378,7 +383,7 @@ describe('Exchange core', () => {
             const initialTakerZrxBalance = await zrxToken.balanceOf.callAsync(takerAddress);
             const initialFeeRecipientZrxBalance = await zrxToken.balanceOf.callAsync(feeRecipientAddress);
 
-            await exchangeWrapper.fillOrderAsync(signedOrder, takerAddress);
+            const txReceipt = await exchangeWrapper.fillOrderAsync(signedOrder, takerAddress);
 
             const finalMakerBalanceA = await noReturnErc20Token.balanceOf.callAsync(makerAddress);
             const finalMakerBalanceB = await erc20TokenB.balanceOf.callAsync(makerAddress);
