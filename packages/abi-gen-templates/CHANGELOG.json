@@ -3,7 +3,11 @@
         "version": "2.4.0",
         "changes": [
             {
-                "note": "Updated calls to <contract wrapper>.deploy0xArtifactAsync to include artifact dependencies.",
+                "note": "Updated interface to `deployFrom0xArtifactAsync` to include artifact dependencies.",
+                "pr": 1995
+            },
+            {
+                "note": "Updated interface to `deployAsync` to include abi dependencies.",
                 "pr": 1995
             }
         ]
