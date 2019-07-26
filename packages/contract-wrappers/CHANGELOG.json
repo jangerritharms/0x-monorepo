@@ -1,5 +1,14 @@
 [
     {
+        "version": "9.2.0",
+        "changes": [
+            {
+                "note": "Updated calls to <contract wrapper>.deploy0xArtifactAsync to include artifact dependencies.",
+                "pr": 1995
+            }
+        ]
+    },
+    {
         "version": "9.1.8",
         "changes": [
             {
