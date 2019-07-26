@@ -64,4 +64,4 @@ class {{toPythonClassname this.name}}Method:
         ({{> params }}) = self.validate_and_normalize_inputs({{> params}})
         {{/if}}
         func = self.contract.contract_instance(address=self.contract.contract_address, abi=self.contract.abi()).functions.{{this.name}}({{> params}})
-        return self.contract.invoke_function_call(func=func, tx_params=tx_params)
+        return self.contract.send_transaction(func=func, tx_params=tx_params)

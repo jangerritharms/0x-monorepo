@@ -74,7 +74,7 @@ class PublicAddConstantMethod:
         """
         (x) = self.validate_and_normalize_inputs(x)
         func = self.contract.contract_instance(address=self.contract.contract_address, abi=self.contract.abi()).functions.publicAddConstant(x)
-        return self.contract.invoke_function_call(func=func, tx_params=tx_params)
+        return self.contract.send_transaction(func=func, tx_params=tx_params)
 
 class PublicAddOneMethod:
     """A class interface to the variety of ways to call publicAddOne."""
@@ -112,7 +112,7 @@ class PublicAddOneMethod:
         """
         (x) = self.validate_and_normalize_inputs(x)
         func = self.contract.contract_instance(address=self.contract.contract_address, abi=self.contract.abi()).functions.publicAddOne(x)
-        return self.contract.invoke_function_call(func=func, tx_params=tx_params)
+        return self.contract.send_transaction(func=func, tx_params=tx_params)
 
 # pylint: disable=too-many-public-methods,too-many-instance-attributes
 class TestLibDummy(BaseContractWrapper):
