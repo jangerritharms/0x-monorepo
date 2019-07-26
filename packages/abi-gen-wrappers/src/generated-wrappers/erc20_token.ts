@@ -21,6 +21,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import * as ethers from 'ethers';
+import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 export type ERC20TokenEventArgs = ERC20TokenTransferEventArgs | ERC20TokenApprovalEventArgs;
@@ -176,6 +177,13 @@ export class ERC20TokenContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as ERC20TokenContract;
+            const abiEncoder = self._lookupAbiEncoder('approve(address,uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public totalSupply = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
@@ -213,6 +221,13 @@ export class ERC20TokenContract extends BaseContract {
             const self = (this as any) as ERC20TokenContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('totalSupply()', []);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as ERC20TokenContract;
+            const abiEncoder = self._lookupAbiEncoder('totalSupply()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public transferFrom = {
@@ -363,6 +378,13 @@ export class ERC20TokenContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as ERC20TokenContract;
+            const abiEncoder = self._lookupAbiEncoder('transferFrom(address,address,uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public balanceOf = {
         async callAsync(
@@ -406,6 +428,13 @@ export class ERC20TokenContract extends BaseContract {
             const self = (this as any) as ERC20TokenContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('balanceOf(address)', [_owner.toLowerCase()]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as ERC20TokenContract;
+            const abiEncoder = self._lookupAbiEncoder('balanceOf(address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public transfer = {
@@ -525,6 +554,13 @@ export class ERC20TokenContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as ERC20TokenContract;
+            const abiEncoder = self._lookupAbiEncoder('transfer(address,uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public allowance = {
         async callAsync(
@@ -578,11 +614,19 @@ export class ERC20TokenContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as ERC20TokenContract;
+            const abiEncoder = self._lookupAbiEncoder('allowance(address,address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public static async deployFrom0xArtifactAsync(
         artifact: ContractArtifact | SimpleContractArtifact,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        artifactDependencies: { [contractName: string]: ContractArtifact | SimpleContractArtifact },
     ): Promise<ERC20TokenContract> {
         assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
             schemas.addressSchema,
@@ -595,13 +639,20 @@ export class ERC20TokenContract extends BaseContract {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const bytecode = artifact.compilerOutput.evm.bytecode.object;
         const abi = artifact.compilerOutput.abi;
-        return ERC20TokenContract.deployAsync(bytecode, abi, provider, txDefaults);
+        const abiDependencies = _.mapValues(
+            artifactDependencies,
+            (artifactDependency: ContractArtifact | SimpleContractArtifact) => {
+                return artifactDependency.compilerOutput.abi;
+            },
+        );
+        return ERC20TokenContract.deployAsync(bytecode, abi, provider, txDefaults, abiDependencies);
     }
     public static async deployAsync(
         bytecode: string,
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        abiDependencies: { [contractName: string]: ContractAbi },
     ): Promise<ERC20TokenContract> {
         assert.isHexString('bytecode', bytecode);
         assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
@@ -625,7 +676,12 @@ export class ERC20TokenContract extends BaseContract {
         logUtils.log(`transactionHash: ${txHash}`);
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
         logUtils.log(`ERC20Token successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new ERC20TokenContract(txReceipt.contractAddress as string, provider, txDefaults);
+        const contractInstance = new ERC20TokenContract(
+            txReceipt.contractAddress as string,
+            provider,
+            txDefaults,
+            abiDependencies,
+        );
         contractInstance.constructorArgs = [];
         return contractInstance;
     }
@@ -813,8 +869,13 @@ export class ERC20TokenContract extends BaseContract {
         ] as ContractAbi;
         return abi;
     }
-    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>) {
-        super('ERC20Token', ERC20TokenContract.ABI(), address, supportedProvider, txDefaults);
+    constructor(
+        address: string,
+        supportedProvider: SupportedProvider,
+        txDefaults?: Partial<TxData>,
+        abiDependencies?: { [contractName: string]: ContractAbi },
+    ) {
+        super('ERC20Token', ERC20TokenContract.ABI(), address, supportedProvider, txDefaults, abiDependencies);
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper']);
     }
 }

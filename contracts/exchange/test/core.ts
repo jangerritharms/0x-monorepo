@@ -118,11 +118,13 @@ describe('Exchange core', () => {
             proxyArtifacts.MultiAssetProxy,
             provider,
             txDefaults,
+            dependencyArtifacts,
         );
         staticCallProxy = await StaticCallProxyContract.deployFrom0xArtifactAsync(
             proxyArtifacts.StaticCallProxy,
             provider,
             txDefaults,
+            dependencyArtifacts,
         );
         const numDummyErc20ToDeploy = 3;
         [erc20TokenA, erc20TokenB, zrxToken] = await erc20Wrapper.deployDummyTokensAsync(
@@ -353,6 +355,7 @@ describe('Exchange core', () => {
                 erc20Artifacts.DummyNoReturnERC20Token,
                 provider,
                 txDefaults,
+                dependencyArtifacts,
                 constants.DUMMY_TOKEN_NAME,
                 constants.DUMMY_TOKEN_SYMBOL,
                 constants.DUMMY_TOKEN_DECIMALS,
@@ -383,7 +386,7 @@ describe('Exchange core', () => {
             const initialTakerZrxBalance = await zrxToken.balanceOf.callAsync(takerAddress);
             const initialFeeRecipientZrxBalance = await zrxToken.balanceOf.callAsync(feeRecipientAddress);
 
-            const txReceipt = await exchangeWrapper.fillOrderAsync(signedOrder, takerAddress);
+            await exchangeWrapper.fillOrderAsync(signedOrder, takerAddress);
 
             const finalMakerBalanceA = await noReturnErc20Token.balanceOf.callAsync(makerAddress);
             const finalMakerBalanceB = await erc20TokenB.balanceOf.callAsync(makerAddress);
@@ -1478,6 +1481,7 @@ describe('Exchange core', () => {
                 proxyArtifacts.TestStaticCallTarget,
                 provider,
                 txDefaults,
+                dependencyArtifacts,
             );
         });
         it('should revert if the staticcall is unsuccessful', async () => {

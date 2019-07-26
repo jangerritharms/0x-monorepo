@@ -21,6 +21,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import * as ethers from 'ethers';
+import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 /* istanbul ignore next */
@@ -84,11 +85,19 @@ export class IValidatorContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as IValidatorContract;
+            const abiEncoder = self._lookupAbiEncoder('isValidSignature(bytes32,address,bytes)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public static async deployFrom0xArtifactAsync(
         artifact: ContractArtifact | SimpleContractArtifact,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        artifactDependencies: { [contractName: string]: ContractArtifact | SimpleContractArtifact },
     ): Promise<IValidatorContract> {
         assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
             schemas.addressSchema,
@@ -101,13 +110,20 @@ export class IValidatorContract extends BaseContract {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const bytecode = artifact.compilerOutput.evm.bytecode.object;
         const abi = artifact.compilerOutput.abi;
-        return IValidatorContract.deployAsync(bytecode, abi, provider, txDefaults);
+        const abiDependencies = _.mapValues(
+            artifactDependencies,
+            (artifactDependency: ContractArtifact | SimpleContractArtifact) => {
+                return artifactDependency.compilerOutput.abi;
+            },
+        );
+        return IValidatorContract.deployAsync(bytecode, abi, provider, txDefaults, abiDependencies);
     }
     public static async deployAsync(
         bytecode: string,
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        abiDependencies: { [contractName: string]: ContractAbi },
     ): Promise<IValidatorContract> {
         assert.isHexString('bytecode', bytecode);
         assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
@@ -131,7 +147,12 @@ export class IValidatorContract extends BaseContract {
         logUtils.log(`transactionHash: ${txHash}`);
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
         logUtils.log(`IValidator successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new IValidatorContract(txReceipt.contractAddress as string, provider, txDefaults);
+        const contractInstance = new IValidatorContract(
+            txReceipt.contractAddress as string,
+            provider,
+            txDefaults,
+            abiDependencies,
+        );
         contractInstance.constructorArgs = [];
         return contractInstance;
     }
@@ -171,8 +192,13 @@ export class IValidatorContract extends BaseContract {
         ] as ContractAbi;
         return abi;
     }
-    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>) {
-        super('IValidator', IValidatorContract.ABI(), address, supportedProvider, txDefaults);
+    constructor(
+        address: string,
+        supportedProvider: SupportedProvider,
+        txDefaults?: Partial<TxData>,
+        abiDependencies?: { [contractName: string]: ContractAbi },
+    ) {
+        super('IValidator', IValidatorContract.ABI(), address, supportedProvider, txDefaults, abiDependencies);
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper']);
     }
 }

@@ -21,6 +21,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import * as ethers from 'ethers';
+import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 /* istanbul ignore next */
@@ -128,6 +129,13 @@ export class IAssetProxyContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as IAssetProxyContract;
+            const abiEncoder = self._lookupAbiEncoder('addAuthorizedAddress(address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public removeAuthorizedAddress = {
         async sendTransactionAsync(target: string, txData?: Partial<TxData> | undefined): Promise<string> {
@@ -229,6 +237,13 @@ export class IAssetProxyContract extends BaseContract {
                 target.toLowerCase(),
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as IAssetProxyContract;
+            const abiEncoder = self._lookupAbiEncoder('removeAuthorizedAddress(address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public removeAuthorizedAddressAtIndex = {
@@ -364,6 +379,13 @@ export class IAssetProxyContract extends BaseContract {
                 [target.toLowerCase(), index],
             );
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as IAssetProxyContract;
+            const abiEncoder = self._lookupAbiEncoder('removeAuthorizedAddressAtIndex(address,uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public transferFrom = {
@@ -526,6 +548,13 @@ export class IAssetProxyContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as IAssetProxyContract;
+            const abiEncoder = self._lookupAbiEncoder('transferFrom(bytes,address,address,uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public getProxyId = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
@@ -564,6 +593,13 @@ export class IAssetProxyContract extends BaseContract {
             const abiEncodedTransactionData = self._strictEncodeArguments('getProxyId()', []);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): string {
+            const self = (this as any) as IAssetProxyContract;
+            const abiEncoder = self._lookupAbiEncoder('getProxyId()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public getAuthorizedAddresses = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string[]> {
@@ -601,6 +637,13 @@ export class IAssetProxyContract extends BaseContract {
             const self = (this as any) as IAssetProxyContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('getAuthorizedAddresses()', []);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): string[] {
+            const self = (this as any) as IAssetProxyContract;
+            const abiEncoder = self._lookupAbiEncoder('getAuthorizedAddresses()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string[]>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public transferOwnership = {
@@ -704,11 +747,19 @@ export class IAssetProxyContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as IAssetProxyContract;
+            const abiEncoder = self._lookupAbiEncoder('transferOwnership(address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public static async deployFrom0xArtifactAsync(
         artifact: ContractArtifact | SimpleContractArtifact,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        artifactDependencies: { [contractName: string]: ContractArtifact | SimpleContractArtifact },
     ): Promise<IAssetProxyContract> {
         assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
             schemas.addressSchema,
@@ -721,13 +772,20 @@ export class IAssetProxyContract extends BaseContract {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const bytecode = artifact.compilerOutput.evm.bytecode.object;
         const abi = artifact.compilerOutput.abi;
-        return IAssetProxyContract.deployAsync(bytecode, abi, provider, txDefaults);
+        const abiDependencies = _.mapValues(
+            artifactDependencies,
+            (artifactDependency: ContractArtifact | SimpleContractArtifact) => {
+                return artifactDependency.compilerOutput.abi;
+            },
+        );
+        return IAssetProxyContract.deployAsync(bytecode, abi, provider, txDefaults, abiDependencies);
     }
     public static async deployAsync(
         bytecode: string,
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        abiDependencies: { [contractName: string]: ContractAbi },
     ): Promise<IAssetProxyContract> {
         assert.isHexString('bytecode', bytecode);
         assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
@@ -751,7 +809,12 @@ export class IAssetProxyContract extends BaseContract {
         logUtils.log(`transactionHash: ${txHash}`);
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
         logUtils.log(`IAssetProxy successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new IAssetProxyContract(txReceipt.contractAddress as string, provider, txDefaults);
+        const contractInstance = new IAssetProxyContract(
+            txReceipt.contractAddress as string,
+            provider,
+            txDefaults,
+            abiDependencies,
+        );
         contractInstance.constructorArgs = [];
         return contractInstance;
     }
@@ -878,8 +941,13 @@ export class IAssetProxyContract extends BaseContract {
         ] as ContractAbi;
         return abi;
     }
-    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>) {
-        super('IAssetProxy', IAssetProxyContract.ABI(), address, supportedProvider, txDefaults);
+    constructor(
+        address: string,
+        supportedProvider: SupportedProvider,
+        txDefaults?: Partial<TxData>,
+        abiDependencies?: { [contractName: string]: ContractAbi },
+    ) {
+        super('IAssetProxy', IAssetProxyContract.ABI(), address, supportedProvider, txDefaults, abiDependencies);
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper']);
     }
 }

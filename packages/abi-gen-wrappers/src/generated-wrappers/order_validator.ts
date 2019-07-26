@@ -21,6 +21,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import * as ethers from 'ethers';
+import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 /* istanbul ignore next */
@@ -136,6 +137,43 @@ export class OrderValidatorContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): [
+            { orderStatus: number; orderHash: string; orderTakerAssetFilledAmount: BigNumber },
+            {
+                makerBalance: BigNumber;
+                makerAllowance: BigNumber;
+                takerBalance: BigNumber;
+                takerAllowance: BigNumber;
+                makerZrxBalance: BigNumber;
+                makerZrxAllowance: BigNumber;
+                takerZrxBalance: BigNumber;
+                takerZrxAllowance: BigNumber;
+            }
+        ] {
+            const self = (this as any) as OrderValidatorContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'getOrderAndTraderInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes),address)',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<
+                [
+                    { orderStatus: number; orderHash: string; orderTakerAssetFilledAmount: BigNumber },
+                    {
+                        makerBalance: BigNumber;
+                        makerAllowance: BigNumber;
+                        takerBalance: BigNumber;
+                        takerAllowance: BigNumber;
+                        makerZrxBalance: BigNumber;
+                        makerZrxAllowance: BigNumber;
+                        takerZrxBalance: BigNumber;
+                        takerZrxAllowance: BigNumber;
+                    }
+                ]
+            >(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public getBalanceAndAllowance = {
         async callAsync(
@@ -188,6 +226,13 @@ export class OrderValidatorContract extends BaseContract {
                 assetData,
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): [BigNumber, BigNumber] {
+            const self = (this as any) as OrderValidatorContract;
+            const abiEncoder = self._lookupAbiEncoder('getBalanceAndAllowance(address,bytes)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber]>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public getOrdersAndTradersInfo = {
@@ -301,6 +346,43 @@ export class OrderValidatorContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): [
+            Array<{ orderStatus: number; orderHash: string; orderTakerAssetFilledAmount: BigNumber }>,
+            Array<{
+                makerBalance: BigNumber;
+                makerAllowance: BigNumber;
+                takerBalance: BigNumber;
+                takerAllowance: BigNumber;
+                makerZrxBalance: BigNumber;
+                makerZrxAllowance: BigNumber;
+                takerZrxBalance: BigNumber;
+                takerZrxAllowance: BigNumber;
+            }>
+        ] {
+            const self = (this as any) as OrderValidatorContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'getOrdersAndTradersInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[],address[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<
+                [
+                    Array<{ orderStatus: number; orderHash: string; orderTakerAssetFilledAmount: BigNumber }>,
+                    Array<{
+                        makerBalance: BigNumber;
+                        makerAllowance: BigNumber;
+                        takerBalance: BigNumber;
+                        takerAllowance: BigNumber;
+                        makerZrxBalance: BigNumber;
+                        makerZrxAllowance: BigNumber;
+                        takerZrxBalance: BigNumber;
+                        takerZrxAllowance: BigNumber;
+                    }>
+                ]
+            >(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public getTradersInfo = {
         async callAsync(
@@ -407,6 +489,37 @@ export class OrderValidatorContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): Array<{
+            makerBalance: BigNumber;
+            makerAllowance: BigNumber;
+            takerBalance: BigNumber;
+            takerAllowance: BigNumber;
+            makerZrxBalance: BigNumber;
+            makerZrxAllowance: BigNumber;
+            takerZrxBalance: BigNumber;
+            takerZrxAllowance: BigNumber;
+        }> {
+            const self = (this as any) as OrderValidatorContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'getTradersInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[],address[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<
+                Array<{
+                    makerBalance: BigNumber;
+                    makerAllowance: BigNumber;
+                    takerBalance: BigNumber;
+                    takerAllowance: BigNumber;
+                    makerZrxBalance: BigNumber;
+                    makerZrxAllowance: BigNumber;
+                    takerZrxBalance: BigNumber;
+                    takerZrxAllowance: BigNumber;
+                }>
+            >(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public getERC721TokenOwner = {
         async callAsync(
@@ -460,6 +573,13 @@ export class OrderValidatorContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): string {
+            const self = (this as any) as OrderValidatorContract;
+            const abiEncoder = self._lookupAbiEncoder('getERC721TokenOwner(address,uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public getBalancesAndAllowances = {
         async callAsync(
@@ -512,6 +632,13 @@ export class OrderValidatorContract extends BaseContract {
                 assetData,
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): [BigNumber[], BigNumber[]] {
+            const self = (this as any) as OrderValidatorContract;
+            const abiEncoder = self._lookupAbiEncoder('getBalancesAndAllowances(address,bytes[])');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<[BigNumber[], BigNumber[]]>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public getTraderInfo = {
@@ -613,11 +740,41 @@ export class OrderValidatorContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerBalance: BigNumber;
+            makerAllowance: BigNumber;
+            takerBalance: BigNumber;
+            takerAllowance: BigNumber;
+            makerZrxBalance: BigNumber;
+            makerZrxAllowance: BigNumber;
+            takerZrxBalance: BigNumber;
+            takerZrxAllowance: BigNumber;
+        } {
+            const self = (this as any) as OrderValidatorContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'getTraderInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes),address)',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerBalance: BigNumber;
+                makerAllowance: BigNumber;
+                takerBalance: BigNumber;
+                takerAllowance: BigNumber;
+                makerZrxBalance: BigNumber;
+                makerZrxAllowance: BigNumber;
+                takerZrxBalance: BigNumber;
+                takerZrxAllowance: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public static async deployFrom0xArtifactAsync(
         artifact: ContractArtifact | SimpleContractArtifact,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        artifactDependencies: { [contractName: string]: ContractArtifact | SimpleContractArtifact },
         _exchange: string,
         _zrxAssetData: string,
     ): Promise<OrderValidatorContract> {
@@ -632,13 +789,28 @@ export class OrderValidatorContract extends BaseContract {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const bytecode = artifact.compilerOutput.evm.bytecode.object;
         const abi = artifact.compilerOutput.abi;
-        return OrderValidatorContract.deployAsync(bytecode, abi, provider, txDefaults, _exchange, _zrxAssetData);
+        const abiDependencies = _.mapValues(
+            artifactDependencies,
+            (artifactDependency: ContractArtifact | SimpleContractArtifact) => {
+                return artifactDependency.compilerOutput.abi;
+            },
+        );
+        return OrderValidatorContract.deployAsync(
+            bytecode,
+            abi,
+            provider,
+            txDefaults,
+            abiDependencies,
+            _exchange,
+            _zrxAssetData,
+        );
     }
     public static async deployAsync(
         bytecode: string,
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        abiDependencies: { [contractName: string]: ContractAbi },
         _exchange: string,
         _zrxAssetData: string,
     ): Promise<OrderValidatorContract> {
@@ -668,7 +840,12 @@ export class OrderValidatorContract extends BaseContract {
         logUtils.log(`transactionHash: ${txHash}`);
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
         logUtils.log(`OrderValidator successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new OrderValidatorContract(txReceipt.contractAddress as string, provider, txDefaults);
+        const contractInstance = new OrderValidatorContract(
+            txReceipt.contractAddress as string,
+            provider,
+            txDefaults,
+            abiDependencies,
+        );
         contractInstance.constructorArgs = [_exchange, _zrxAssetData];
         return contractInstance;
     }
@@ -1238,8 +1415,13 @@ export class OrderValidatorContract extends BaseContract {
         ] as ContractAbi;
         return abi;
     }
-    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>) {
-        super('OrderValidator', OrderValidatorContract.ABI(), address, supportedProvider, txDefaults);
+    constructor(
+        address: string,
+        supportedProvider: SupportedProvider,
+        txDefaults?: Partial<TxData>,
+        abiDependencies?: { [contractName: string]: ContractAbi },
+    ) {
+        super('OrderValidator', OrderValidatorContract.ABI(), address, supportedProvider, txDefaults, abiDependencies);
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper']);
     }
 }

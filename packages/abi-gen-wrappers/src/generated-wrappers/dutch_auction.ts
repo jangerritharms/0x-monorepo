@@ -21,6 +21,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import * as ethers from 'ethers';
+import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 /* istanbul ignore next */
@@ -223,6 +224,31 @@ export class DutchAuctionContract extends BaseContract {
                 [order],
             );
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            beginTimeSeconds: BigNumber;
+            endTimeSeconds: BigNumber;
+            beginAmount: BigNumber;
+            endAmount: BigNumber;
+            currentAmount: BigNumber;
+            currentTimeSeconds: BigNumber;
+        } {
+            const self = (this as any) as DutchAuctionContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'getAuctionDetails((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes))',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                beginTimeSeconds: BigNumber;
+                endTimeSeconds: BigNumber;
+                beginAmount: BigNumber;
+                endAmount: BigNumber;
+                currentAmount: BigNumber;
+                currentTimeSeconds: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public matchOrders = {
@@ -534,11 +560,51 @@ export class DutchAuctionContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            left: {
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            };
+            right: {
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            };
+            leftMakerAssetSpreadAmount: BigNumber;
+        } {
+            const self = (this as any) as DutchAuctionContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'matchOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes),(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes),bytes,bytes)',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                left: {
+                    makerAssetFilledAmount: BigNumber;
+                    takerAssetFilledAmount: BigNumber;
+                    makerFeePaid: BigNumber;
+                    takerFeePaid: BigNumber;
+                };
+                right: {
+                    makerAssetFilledAmount: BigNumber;
+                    takerAssetFilledAmount: BigNumber;
+                    makerFeePaid: BigNumber;
+                    takerFeePaid: BigNumber;
+                };
+                leftMakerAssetSpreadAmount: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public static async deployFrom0xArtifactAsync(
         artifact: ContractArtifact | SimpleContractArtifact,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        artifactDependencies: { [contractName: string]: ContractArtifact | SimpleContractArtifact },
         _exchange: string,
     ): Promise<DutchAuctionContract> {
         assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
@@ -552,13 +618,20 @@ export class DutchAuctionContract extends BaseContract {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const bytecode = artifact.compilerOutput.evm.bytecode.object;
         const abi = artifact.compilerOutput.abi;
-        return DutchAuctionContract.deployAsync(bytecode, abi, provider, txDefaults, _exchange);
+        const abiDependencies = _.mapValues(
+            artifactDependencies,
+            (artifactDependency: ContractArtifact | SimpleContractArtifact) => {
+                return artifactDependency.compilerOutput.abi;
+            },
+        );
+        return DutchAuctionContract.deployAsync(bytecode, abi, provider, txDefaults, abiDependencies, _exchange);
     }
     public static async deployAsync(
         bytecode: string,
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        abiDependencies: { [contractName: string]: ContractAbi },
         _exchange: string,
     ): Promise<DutchAuctionContract> {
         assert.isHexString('bytecode', bytecode);
@@ -587,7 +660,12 @@ export class DutchAuctionContract extends BaseContract {
         logUtils.log(`transactionHash: ${txHash}`);
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
         logUtils.log(`DutchAuction successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new DutchAuctionContract(txReceipt.contractAddress as string, provider, txDefaults);
+        const contractInstance = new DutchAuctionContract(
+            txReceipt.contractAddress as string,
+            provider,
+            txDefaults,
+            abiDependencies,
+        );
         contractInstance.constructorArgs = [_exchange];
         return contractInstance;
     }
@@ -888,8 +966,13 @@ export class DutchAuctionContract extends BaseContract {
         ] as ContractAbi;
         return abi;
     }
-    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>) {
-        super('DutchAuction', DutchAuctionContract.ABI(), address, supportedProvider, txDefaults);
+    constructor(
+        address: string,
+        supportedProvider: SupportedProvider,
+        txDefaults?: Partial<TxData>,
+        abiDependencies?: { [contractName: string]: ContractAbi },
+    ) {
+        super('DutchAuction', DutchAuctionContract.ABI(), address, supportedProvider, txDefaults, abiDependencies);
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper']);
     }
 }

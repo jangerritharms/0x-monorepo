@@ -21,6 +21,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import * as ethers from 'ethers';
+import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 export type AssetProxyOwnerEventArgs =
@@ -152,6 +153,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const abiEncodedTransactionData = self._strictEncodeArguments('owners(uint256)', [index_0]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): string {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('owners(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public removeOwner = {
         async sendTransactionAsync(owner: string, txData?: Partial<TxData> | undefined): Promise<string> {
@@ -253,6 +261,13 @@ export class AssetProxyOwnerContract extends BaseContract {
                 owner.toLowerCase(),
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('removeOwner(address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public revokeConfirmation = {
@@ -360,6 +375,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('revokeConfirmation(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public isOwner = {
         async callAsync(
@@ -403,6 +425,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const self = (this as any) as AssetProxyOwnerContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('isOwner(address)', [index_0.toLowerCase()]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('isOwner(address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public confirmations = {
@@ -456,6 +485,13 @@ export class AssetProxyOwnerContract extends BaseContract {
                 index_1.toLowerCase(),
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('confirmations(uint256,address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public executeRemoveAuthorizedAddressAtIndex = {
@@ -573,6 +609,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('executeRemoveAuthorizedAddressAtIndex(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public secondsTimeLocked = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
@@ -610,6 +653,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const self = (this as any) as AssetProxyOwnerContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('secondsTimeLocked()', []);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('secondsTimeLocked()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public getTransactionCount = {
@@ -660,6 +710,13 @@ export class AssetProxyOwnerContract extends BaseContract {
                 executed,
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('getTransactionCount(bool,bool)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public registerAssetProxy = {
@@ -796,6 +853,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('registerAssetProxy(address,bool)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public addOwner = {
         async sendTransactionAsync(owner: string, txData?: Partial<TxData> | undefined): Promise<string> {
@@ -896,6 +960,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const abiEncodedTransactionData = self._strictEncodeArguments('addOwner(address)', [owner.toLowerCase()]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('addOwner(address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public isConfirmed = {
         async callAsync(
@@ -939,6 +1010,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const self = (this as any) as AssetProxyOwnerContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('isConfirmed(uint256)', [transactionId]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('isConfirmed(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public changeTimeLock = {
@@ -1049,6 +1127,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('changeTimeLock(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public isAssetProxyRegistered = {
         async callAsync(
@@ -1094,6 +1179,13 @@ export class AssetProxyOwnerContract extends BaseContract {
                 index_0.toLowerCase(),
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('isAssetProxyRegistered(address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public getConfirmationCount = {
@@ -1141,6 +1233,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('getConfirmationCount(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public transactions = {
         async callAsync(
@@ -1185,6 +1284,15 @@ export class AssetProxyOwnerContract extends BaseContract {
             const abiEncodedTransactionData = self._strictEncodeArguments('transactions(uint256)', [index_0]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): [string, BigNumber, string, boolean] {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('transactions(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<[string, BigNumber, string, boolean]>(
+                returnData,
+            );
+            return abiDecodedReturnData;
+        },
     };
     public getOwners = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string[]> {
@@ -1222,6 +1330,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const self = (this as any) as AssetProxyOwnerContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('getOwners()', []);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): string[] {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('getOwners()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string[]>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public getTransactionIds = {
@@ -1284,6 +1399,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): BigNumber[] {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('getTransactionIds(uint256,uint256,bool,bool)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber[]>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public getConfirmations = {
         async callAsync(
@@ -1328,6 +1450,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const abiEncodedTransactionData = self._strictEncodeArguments('getConfirmations(uint256)', [transactionId]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): string[] {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('getConfirmations(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string[]>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public transactionCount = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
@@ -1365,6 +1494,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const self = (this as any) as AssetProxyOwnerContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('transactionCount()', []);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('transactionCount()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public changeRequirement = {
@@ -1469,6 +1605,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const self = (this as any) as AssetProxyOwnerContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('changeRequirement(uint256)', [_required]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('changeRequirement(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public confirmTransaction = {
@@ -1575,6 +1718,13 @@ export class AssetProxyOwnerContract extends BaseContract {
                 transactionId,
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('confirmTransaction(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public submitTransaction = {
@@ -1725,6 +1875,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('submitTransaction(address,uint256,bytes)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public confirmationTimes = {
         async callAsync(
@@ -1769,6 +1926,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const abiEncodedTransactionData = self._strictEncodeArguments('confirmationTimes(uint256)', [index_0]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('confirmationTimes(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public MAX_OWNER_COUNT = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
@@ -1807,6 +1971,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const abiEncodedTransactionData = self._strictEncodeArguments('MAX_OWNER_COUNT()', []);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('MAX_OWNER_COUNT()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public required = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
@@ -1844,6 +2015,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             const self = (this as any) as AssetProxyOwnerContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('required()', []);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('required()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public replaceOwner = {
@@ -1976,6 +2154,13 @@ export class AssetProxyOwnerContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('replaceOwner(address,address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public executeTransaction = {
         async sendTransactionAsync(transactionId: BigNumber, txData?: Partial<TxData> | undefined): Promise<string> {
@@ -2082,11 +2267,19 @@ export class AssetProxyOwnerContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as AssetProxyOwnerContract;
+            const abiEncoder = self._lookupAbiEncoder('executeTransaction(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public static async deployFrom0xArtifactAsync(
         artifact: ContractArtifact | SimpleContractArtifact,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        artifactDependencies: { [contractName: string]: ContractArtifact | SimpleContractArtifact },
         _owners: string[],
         _assetProxyContracts: string[],
         _required: BigNumber,
@@ -2103,11 +2296,18 @@ export class AssetProxyOwnerContract extends BaseContract {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const bytecode = artifact.compilerOutput.evm.bytecode.object;
         const abi = artifact.compilerOutput.abi;
+        const abiDependencies = _.mapValues(
+            artifactDependencies,
+            (artifactDependency: ContractArtifact | SimpleContractArtifact) => {
+                return artifactDependency.compilerOutput.abi;
+            },
+        );
         return AssetProxyOwnerContract.deployAsync(
             bytecode,
             abi,
             provider,
             txDefaults,
+            abiDependencies,
             _owners,
             _assetProxyContracts,
             _required,
@@ -2119,6 +2319,7 @@ export class AssetProxyOwnerContract extends BaseContract {
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        abiDependencies: { [contractName: string]: ContractAbi },
         _owners: string[],
         _assetProxyContracts: string[],
         _required: BigNumber,
@@ -2150,7 +2351,12 @@ export class AssetProxyOwnerContract extends BaseContract {
         logUtils.log(`transactionHash: ${txHash}`);
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
         logUtils.log(`AssetProxyOwner successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new AssetProxyOwnerContract(txReceipt.contractAddress as string, provider, txDefaults);
+        const contractInstance = new AssetProxyOwnerContract(
+            txReceipt.contractAddress as string,
+            provider,
+            txDefaults,
+            abiDependencies,
+        );
         contractInstance.constructorArgs = [_owners, _assetProxyContracts, _required, _secondsTimeLocked];
         return contractInstance;
     }
@@ -2861,8 +3067,20 @@ export class AssetProxyOwnerContract extends BaseContract {
         ] as ContractAbi;
         return abi;
     }
-    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>) {
-        super('AssetProxyOwner', AssetProxyOwnerContract.ABI(), address, supportedProvider, txDefaults);
+    constructor(
+        address: string,
+        supportedProvider: SupportedProvider,
+        txDefaults?: Partial<TxData>,
+        abiDependencies?: { [contractName: string]: ContractAbi },
+    ) {
+        super(
+            'AssetProxyOwner',
+            AssetProxyOwnerContract.ABI(),
+            address,
+            supportedProvider,
+            txDefaults,
+            abiDependencies,
+        );
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper']);
     }
 }

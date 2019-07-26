@@ -21,6 +21,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import * as ethers from 'ethers';
+import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 /* istanbul ignore next */
@@ -70,11 +71,19 @@ export class EthBalanceCheckerContract extends BaseContract {
             const abiEncodedTransactionData = self._strictEncodeArguments('getEthBalances(address[])', [addresses]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): BigNumber[] {
+            const self = (this as any) as EthBalanceCheckerContract;
+            const abiEncoder = self._lookupAbiEncoder('getEthBalances(address[])');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber[]>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public static async deployFrom0xArtifactAsync(
         artifact: ContractArtifact | SimpleContractArtifact,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        artifactDependencies: { [contractName: string]: ContractArtifact | SimpleContractArtifact },
     ): Promise<EthBalanceCheckerContract> {
         assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
             schemas.addressSchema,
@@ -87,13 +96,20 @@ export class EthBalanceCheckerContract extends BaseContract {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const bytecode = artifact.compilerOutput.evm.bytecode.object;
         const abi = artifact.compilerOutput.abi;
-        return EthBalanceCheckerContract.deployAsync(bytecode, abi, provider, txDefaults);
+        const abiDependencies = _.mapValues(
+            artifactDependencies,
+            (artifactDependency: ContractArtifact | SimpleContractArtifact) => {
+                return artifactDependency.compilerOutput.abi;
+            },
+        );
+        return EthBalanceCheckerContract.deployAsync(bytecode, abi, provider, txDefaults, abiDependencies);
     }
     public static async deployAsync(
         bytecode: string,
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        abiDependencies: { [contractName: string]: ContractAbi },
     ): Promise<EthBalanceCheckerContract> {
         assert.isHexString('bytecode', bytecode);
         assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
@@ -121,6 +137,7 @@ export class EthBalanceCheckerContract extends BaseContract {
             txReceipt.contractAddress as string,
             provider,
             txDefaults,
+            abiDependencies,
         );
         contractInstance.constructorArgs = [];
         return contractInstance;
@@ -153,8 +170,20 @@ export class EthBalanceCheckerContract extends BaseContract {
         ] as ContractAbi;
         return abi;
     }
-    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>) {
-        super('EthBalanceChecker', EthBalanceCheckerContract.ABI(), address, supportedProvider, txDefaults);
+    constructor(
+        address: string,
+        supportedProvider: SupportedProvider,
+        txDefaults?: Partial<TxData>,
+        abiDependencies?: { [contractName: string]: ContractAbi },
+    ) {
+        super(
+            'EthBalanceChecker',
+            EthBalanceCheckerContract.ABI(),
+            address,
+            supportedProvider,
+            txDefaults,
+            abiDependencies,
+        );
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper']);
     }
 }

@@ -21,6 +21,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import * as ethers from 'ethers';
+import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 export type ExchangeEventArgs =
@@ -124,6 +125,13 @@ export class ExchangeContract extends BaseContract {
             const self = (this as any) as ExchangeContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('filled(bytes32)', [index_0]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('filled(bytes32)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public batchFillOrders = {
@@ -351,6 +359,27 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerAssetFilledAmount: BigNumber;
+            takerAssetFilledAmount: BigNumber;
+            makerFeePaid: BigNumber;
+            takerFeePaid: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'batchFillOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[],uint256[],bytes[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public cancelled = {
         async callAsync(
@@ -394,6 +423,13 @@ export class ExchangeContract extends BaseContract {
             const self = (this as any) as ExchangeContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('cancelled(bytes32)', [index_0]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('cancelled(bytes32)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public preSign = {
@@ -543,6 +579,13 @@ export class ExchangeContract extends BaseContract {
                 signature,
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('preSign(bytes32,address,bytes)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public matchOrders = {
@@ -854,6 +897,45 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            left: {
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            };
+            right: {
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            };
+            leftMakerAssetSpreadAmount: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'matchOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes),(address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes),bytes,bytes)',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                left: {
+                    makerAssetFilledAmount: BigNumber;
+                    takerAssetFilledAmount: BigNumber;
+                    makerFeePaid: BigNumber;
+                    takerFeePaid: BigNumber;
+                };
+                right: {
+                    makerAssetFilledAmount: BigNumber;
+                    takerAssetFilledAmount: BigNumber;
+                    makerFeePaid: BigNumber;
+                    takerFeePaid: BigNumber;
+                };
+                leftMakerAssetSpreadAmount: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public fillOrderNoThrow = {
         async sendTransactionAsync(
@@ -1075,6 +1157,27 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerAssetFilledAmount: BigNumber;
+            takerAssetFilledAmount: BigNumber;
+            makerFeePaid: BigNumber;
+            takerFeePaid: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'fillOrderNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes),uint256,bytes)',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public assetProxies = {
         async callAsync(index_0: string, callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
@@ -1114,6 +1217,13 @@ export class ExchangeContract extends BaseContract {
             const self = (this as any) as ExchangeContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('assetProxies(bytes4)', [index_0]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): string {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('assetProxies(bytes4)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public batchCancelOrders = {
@@ -1305,6 +1415,15 @@ export class ExchangeContract extends BaseContract {
                 [orders],
             );
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'batchCancelOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public batchFillOrKillOrders = {
@@ -1532,6 +1651,27 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerAssetFilledAmount: BigNumber;
+            takerAssetFilledAmount: BigNumber;
+            makerFeePaid: BigNumber;
+            takerFeePaid: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'batchFillOrKillOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[],uint256[],bytes[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public cancelOrdersUpTo = {
         async sendTransactionAsync(targetOrderEpoch: BigNumber, txData?: Partial<TxData> | undefined): Promise<string> {
@@ -1637,6 +1777,13 @@ export class ExchangeContract extends BaseContract {
                 targetOrderEpoch,
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('cancelOrdersUpTo(uint256)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public batchFillOrdersNoThrow = {
@@ -1864,6 +2011,27 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerAssetFilledAmount: BigNumber;
+            takerAssetFilledAmount: BigNumber;
+            makerFeePaid: BigNumber;
+            takerFeePaid: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'batchFillOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[],uint256[],bytes[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public getAssetProxy = {
         async callAsync(
@@ -1908,6 +2076,13 @@ export class ExchangeContract extends BaseContract {
             const abiEncodedTransactionData = self._strictEncodeArguments('getAssetProxy(bytes4)', [assetProxyId]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): string {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('getAssetProxy(bytes4)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public transactions = {
         async callAsync(
@@ -1951,6 +2126,13 @@ export class ExchangeContract extends BaseContract {
             const self = (this as any) as ExchangeContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('transactions(bytes32)', [index_0]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('transactions(bytes32)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public fillOrKillOrder = {
@@ -2173,6 +2355,27 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerAssetFilledAmount: BigNumber;
+            takerAssetFilledAmount: BigNumber;
+            makerFeePaid: BigNumber;
+            takerFeePaid: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'fillOrKillOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes),uint256,bytes)',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public setSignatureValidatorApproval = {
         async sendTransactionAsync(
@@ -2312,6 +2515,13 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('setSignatureValidatorApproval(address,bool)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public allowedValidators = {
         async callAsync(
@@ -2364,6 +2574,13 @@ export class ExchangeContract extends BaseContract {
                 index_1.toLowerCase(),
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('allowedValidators(address,address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public marketSellOrders = {
@@ -2591,6 +2808,27 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerAssetFilledAmount: BigNumber;
+            takerAssetFilledAmount: BigNumber;
+            makerFeePaid: BigNumber;
+            takerFeePaid: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'marketSellOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[],uint256,bytes[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public getOrdersInfo = {
         async callAsync(
@@ -2673,6 +2911,19 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): Array<{ orderStatus: number; orderHash: string; orderTakerAssetFilledAmount: BigNumber }> {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'getOrdersInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<
+                Array<{ orderStatus: number; orderHash: string; orderTakerAssetFilledAmount: BigNumber }>
+            >(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public preSigned = {
         async callAsync(
@@ -2726,6 +2977,13 @@ export class ExchangeContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('preSigned(bytes32,address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public owner = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
@@ -2763,6 +3021,13 @@ export class ExchangeContract extends BaseContract {
             const self = (this as any) as ExchangeContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('owner()', []);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): string {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('owner()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public isValidSignature = {
@@ -2821,6 +3086,13 @@ export class ExchangeContract extends BaseContract {
                 signature,
             ]);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): boolean {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('isValidSignature(bytes32,address,bytes)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<boolean>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public marketBuyOrdersNoThrow = {
@@ -3048,6 +3320,27 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerAssetFilledAmount: BigNumber;
+            takerAssetFilledAmount: BigNumber;
+            makerFeePaid: BigNumber;
+            takerFeePaid: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'marketBuyOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[],uint256,bytes[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public fillOrder = {
         async sendTransactionAsync(
@@ -3264,6 +3557,27 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerAssetFilledAmount: BigNumber;
+            takerAssetFilledAmount: BigNumber;
+            makerFeePaid: BigNumber;
+            takerFeePaid: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'fillOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes),uint256,bytes)',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public executeTransaction = {
         async sendTransactionAsync(
@@ -3425,6 +3739,13 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('executeTransaction(uint256,address,bytes,bytes)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public registerAssetProxy = {
         async sendTransactionAsync(assetProxy: string, txData?: Partial<TxData> | undefined): Promise<string> {
@@ -3531,6 +3852,13 @@ export class ExchangeContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('registerAssetProxy(address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public getOrderInfo = {
         async callAsync(
@@ -3610,6 +3938,21 @@ export class ExchangeContract extends BaseContract {
                 [order],
             );
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): { orderStatus: number; orderHash: string; orderTakerAssetFilledAmount: BigNumber } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'getOrderInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes))',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                orderStatus: number;
+                orderHash: string;
+                orderTakerAssetFilledAmount: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public cancelOrder = {
@@ -3795,6 +4138,15 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'cancelOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes))',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public orderEpoch = {
         async callAsync(
@@ -3848,6 +4200,13 @@ export class ExchangeContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): BigNumber {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('orderEpoch(address,address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<BigNumber>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public ZRX_ASSET_DATA = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
@@ -3885,6 +4244,13 @@ export class ExchangeContract extends BaseContract {
             const self = (this as any) as ExchangeContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('ZRX_ASSET_DATA()', []);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): string {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('ZRX_ASSET_DATA()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public marketSellOrdersNoThrow = {
@@ -4112,6 +4478,27 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerAssetFilledAmount: BigNumber;
+            takerAssetFilledAmount: BigNumber;
+            makerFeePaid: BigNumber;
+            takerFeePaid: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'marketSellOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[],uint256,bytes[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public EIP712_DOMAIN_HASH = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
@@ -4149,6 +4536,13 @@ export class ExchangeContract extends BaseContract {
             const self = (this as any) as ExchangeContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('EIP712_DOMAIN_HASH()', []);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): string {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('EIP712_DOMAIN_HASH()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public marketBuyOrders = {
@@ -4376,6 +4770,27 @@ export class ExchangeContract extends BaseContract {
             );
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(
+            returnData: string,
+        ): {
+            makerAssetFilledAmount: BigNumber;
+            takerAssetFilledAmount: BigNumber;
+            makerFeePaid: BigNumber;
+            takerFeePaid: BigNumber;
+        } {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder(
+                'marketBuyOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[],uint256,bytes[])',
+            );
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<{
+                makerAssetFilledAmount: BigNumber;
+                takerAssetFilledAmount: BigNumber;
+                makerFeePaid: BigNumber;
+                takerFeePaid: BigNumber;
+            }>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public currentContextAddress = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
@@ -4413,6 +4828,13 @@ export class ExchangeContract extends BaseContract {
             const self = (this as any) as ExchangeContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('currentContextAddress()', []);
             return abiEncodedTransactionData;
+        },
+        getABIDecodedReturnData(returnData: string): string {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('currentContextAddress()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string>(returnData);
+            return abiDecodedReturnData;
         },
     };
     public transferOwnership = {
@@ -4516,6 +4938,13 @@ export class ExchangeContract extends BaseContract {
             ]);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): void {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('transferOwnership(address)');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<void>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public VERSION = {
         async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
@@ -4554,11 +4983,19 @@ export class ExchangeContract extends BaseContract {
             const abiEncodedTransactionData = self._strictEncodeArguments('VERSION()', []);
             return abiEncodedTransactionData;
         },
+        getABIDecodedReturnData(returnData: string): string {
+            const self = (this as any) as ExchangeContract;
+            const abiEncoder = self._lookupAbiEncoder('VERSION()');
+            // tslint:disable boolean-naming
+            const abiDecodedReturnData = abiEncoder.strictDecodeReturnValue<string>(returnData);
+            return abiDecodedReturnData;
+        },
     };
     public static async deployFrom0xArtifactAsync(
         artifact: ContractArtifact | SimpleContractArtifact,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        artifactDependencies: { [contractName: string]: ContractArtifact | SimpleContractArtifact },
         _zrxAssetData: string,
     ): Promise<ExchangeContract> {
         assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
@@ -4572,13 +5009,20 @@ export class ExchangeContract extends BaseContract {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const bytecode = artifact.compilerOutput.evm.bytecode.object;
         const abi = artifact.compilerOutput.abi;
-        return ExchangeContract.deployAsync(bytecode, abi, provider, txDefaults, _zrxAssetData);
+        const abiDependencies = _.mapValues(
+            artifactDependencies,
+            (artifactDependency: ContractArtifact | SimpleContractArtifact) => {
+                return artifactDependency.compilerOutput.abi;
+            },
+        );
+        return ExchangeContract.deployAsync(bytecode, abi, provider, txDefaults, abiDependencies, _zrxAssetData);
     }
     public static async deployAsync(
         bytecode: string,
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
+        abiDependencies: { [contractName: string]: ContractAbi },
         _zrxAssetData: string,
     ): Promise<ExchangeContract> {
         assert.isHexString('bytecode', bytecode);
@@ -4607,7 +5051,12 @@ export class ExchangeContract extends BaseContract {
         logUtils.log(`transactionHash: ${txHash}`);
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
         logUtils.log(`Exchange successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new ExchangeContract(txReceipt.contractAddress as string, provider, txDefaults);
+        const contractInstance = new ExchangeContract(
+            txReceipt.contractAddress as string,
+            provider,
+            txDefaults,
+            abiDependencies,
+        );
         contractInstance.constructorArgs = [_zrxAssetData];
         return contractInstance;
     }
@@ -6591,8 +7040,13 @@ export class ExchangeContract extends BaseContract {
         ] as ContractAbi;
         return abi;
     }
-    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>) {
-        super('Exchange', ExchangeContract.ABI(), address, supportedProvider, txDefaults);
+    constructor(
+        address: string,
+        supportedProvider: SupportedProvider,
+        txDefaults?: Partial<TxData>,
+        abiDependencies?: { [contractName: string]: ContractAbi },
+    ) {
+        super('Exchange', ExchangeContract.ABI(), address, supportedProvider, txDefaults, abiDependencies);
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper']);
     }
 }
