@@ -51,7 +51,7 @@
         "react": "^16.5.2",
         "react-dom": "^16.5.2",
         "react-markdown": "^3.2.2",
-        "react-scroll": "0xproject/react-scroll#pr-330-and-replace-state",
+        "react-scroll": "https://github.com/0xProject/react-scroll.git#d2afc2729dc09980e4113d8c38a1b012ba180d81",
         "react-tooltip": "^3.2.7",
         "semver": "5.5.0",
         "styled-components": "^4.1.1"
